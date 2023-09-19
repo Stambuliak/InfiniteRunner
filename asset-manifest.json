@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/InfiniteRunner/static/css/main.db98c656.css",
-    "main.js": "/InfiniteRunner/static/js/main.d3106530.js",
+    "main.js": "/InfiniteRunner/static/js/main.aed0c7d9.js",
     "index.html": "/InfiniteRunner/index.html",
     "main.db98c656.css.map": "/InfiniteRunner/static/css/main.db98c656.css.map",
-    "main.d3106530.js.map": "/InfiniteRunner/static/js/main.d3106530.js.map"
+    "main.aed0c7d9.js.map": "/InfiniteRunner/static/js/main.aed0c7d9.js.map"
   },
   "entrypoints": [
     "static/css/main.db98c656.css",
-    "static/js/main.d3106530.js"
+    "static/js/main.aed0c7d9.js"
   ]
 }
