@@ -2,23 +2,19 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader';
 import GameOverScreen from './GameOverScreen';
-
 import './GameBoard.css';
 
 export const Gameboard = () => {
   const sceneRef = useRef(null);
   const [jumping, setJumping] = useState(false);
+  const [jumpActive, setJumpActive] = useState(false);
   let [jumpHeight] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [gameRunning, setGameRunning] = useState(true);
   const [score, setScore] = useState(0);
 
-
-
-  // Создайте массив для хранения препятствий
   const obstacles = [];
-  const obstacleDirection = new THREE.Vector3(-1, 0, 1); // Вперед по z-оси (направление к персонажу)
-
+  const obstacleDirection = new THREE.Vector3(-1, 0, 1);
 
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -30,9 +26,6 @@ export const Gameboard = () => {
       const obstacleBox = new THREE.Box3().setFromObject(obstacle);
       return characterBox.intersectsBox(obstacleBox);
     };
-
-    
-    
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     sceneRef.current.appendChild(renderer.domElement);
@@ -56,7 +49,6 @@ export const Gameboard = () => {
     loader.load('./character.glb', (gltf) => {
       const character = gltf.scene;
       character.position.set(-2, -1, 4);
-
       character.rotation.y = 98;
       scene.add(character);
 
@@ -68,23 +60,15 @@ export const Gameboard = () => {
 
       let lastObstacleTime = 0;
 
-      // Функция для создания препятствия
       const createObstacle = () => {
         loader.load('./bomb.glb', (gltfObstacle) => {
           const obstacleModel = gltfObstacle.scene;
-      
-          // Уменьшение модели в 2 раза по всем осям
           obstacleModel.scale.set(0.05, 0.05, 0.05);
-      
-          // Опускание модели на 2 единицы по оси Y
-          obstacleModel.position.x = 6; // Случайная позиция по x
-          obstacleModel.position.y = -0.7; // На уровне земли
+          obstacleModel.position.x = 6;
+          obstacleModel.position.y = -0.7;
           obstacleModel.position.z = -4;
-
-          obstacleModel.rotation.y = 150
-
-          setScore((prev) => prev + 10)
-      
+          obstacleModel.rotation.y = 150;
+          setScore((prev) => prev + 10);
           scene.add(obstacleModel);
           obstacles.push(obstacleModel);
 
@@ -95,54 +79,49 @@ export const Gameboard = () => {
           });
         });
       };
-      
-      
 
-      // Функция для движения препятствий
       const moveObstacles = () => {
         if (gameOver) {
-          setGameRunning(false); // Остановить игру при проигрыше
+          setGameRunning(false);
           return;
         }
-      
+
         const obstacleSpeed = 0.03;
-      
+
         for (let i = 0; i < obstacles.length; i++) {
           const obstacle = obstacles[i];
           const obstaclePosition = obstacle.position.clone();
           obstaclePosition.add(obstacleDirection.clone().multiplyScalar(obstacleSpeed));
           obstacle.position.copy(obstaclePosition);
-      
-          // Если препятствие выходит за пределы вашего взгляда, удалите его
+
           if (obstacle.position.z < -10) {
             scene.remove(obstacle);
             obstacles.splice(i, 1);
             i--;
           } else {
-            // Проверяем столкновение с персонажем
             if (checkCollision(character, obstacle)) {
-              setGameOver(true); // Игра заканчивается при столкновении
+              setGameOver(true);
               return;
             }
           }
         }
-      
+
         const obstacleInterval = 1000;
-      
+
         if (performance.now() - lastObstacleTime > obstacleInterval) {
           createObstacle();
           lastObstacleTime = performance.now();
         }
-      
+
         requestAnimationFrame(moveObstacles);
       };
 
       moveObstacles();
 
-      // Обработка клавиши пробела для прыжка (доступно только если игра не завершена)
       window.addEventListener('keydown', (e) => {
         if (e.key === ' ' && !gameOver) {
-          if (!jumping) {
+          if (!jumpActive) {
+            setJumpActive(true);
             setJumping(true);
             jump();
           }
@@ -150,7 +129,7 @@ export const Gameboard = () => {
       });
 
       const jump = () => {
-        if (jumpHeight < 2) {
+        if (jumpHeight < 2.5) {
           jumpHeight += 0.05;
           character.position.y += 0.03;
           requestAnimationFrame(jump);
@@ -166,8 +145,10 @@ export const Gameboard = () => {
           requestAnimationFrame(fall);
         } else {
           setJumping(false);
+          setJumpActive(false);
         }
       };
+
     });
 
     const animate = () => {
@@ -179,7 +160,6 @@ export const Gameboard = () => {
 
     animate();
   }, [gameOver]);
-
 
   return (
     <div className="game-container">

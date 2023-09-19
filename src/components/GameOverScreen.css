@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
   color: white;
-  z-index: 999; /* Значение z-index должно быть выше других элементов на странице */
+  z-index: 999;
 }
 
 .game-over h1 {
