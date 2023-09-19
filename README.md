@@ -1,5 +1,6 @@
 React Three.js Game
-Game Screenshot
+![image](https://github.com/Stambuliak/InfiniteRunner/assets/125443048/f59e0584-41ae-4f0d-87ad-977eea7e60e7)
+
 
 Description
 This project is a captivating and interactive game built using the power of React and Three.js. Dive into a world of immersive 3D graphics and engaging gameplay, where you'll embark on thrilling adventures, solve puzzles, and challenge your skills.
